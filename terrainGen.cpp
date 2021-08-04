@@ -12,8 +12,8 @@ int* main(int n) {
 // populates the entire array
 void diamondSquare(int Array[][], int size)
 {
- int CHUNK_X = sizeof(Array[0][0]);
- int CHUNK_Z = sizeof(Array[0]);
+ int CHUNK_X = sizeof(Array[0]);
+ int CHUNK_Z = sizeof(Array);
  int half = size / 2;
 
  // base case
@@ -46,8 +46,8 @@ void diamondSquare(int Array[][], int size)
 
 void squareStep(int Array[][], int x, int z, int reach)
 {
- int CHUNK_X = sizeof(Array[0][0]);
- int CHUNK_Z = sizeof(Array[0]);
+ int CHUNK_X = sizeof(Array[0]);
+ int CHUNK_Z = sizeof(Array);
 
  int count = 0;
  float avg = 0.0f;

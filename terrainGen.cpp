@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include <math.h> // included purely for round(). is there a syntax for including a single function?
+#include <math.h> // for round()
 
 
 int* main(int n) {
@@ -10,8 +10,10 @@ int* main(int n) {
 }
 
 // populates the entire array
+// TODO: fix 2d array arguments
 void diamondSquare(int Array[][], int size)
 {
+ // maybe redundant
  int CHUNK_X = sizeof(Array[0]);
  int CHUNK_Z = sizeof(Array);
  int half = size / 2;

@@ -1,115 +1,99 @@
 #include <stdlib.h>
+#include <vector>
+#include <stdexcept>
 #include <math.h> // for round()
 
+namespace props {
 
-int* main(int n) {
-  int dimension = (int) pow(2, n) + 1;
-  int arr[dimension][dimension];
-  diamondSquare(arr, n);
-  return *arr;
+  int side = 5;
+  // for indexing
+  int max = side-1;
+  int maxHeight = 255;
+  int validNeighbors = 4;
+
+  // 2d vector 'terrain'
+  std::vector<std::vector<int> >
+  terrain(
+    side,
+    std::vector<int>(side));
 }
 
-// populates the entire array
-// TODO: fix 2d array arguments
-void diamondSquare(int Array[][], int size)
-{
- // maybe redundant
- int CHUNK_X = sizeof(Array[0]);
- int CHUNK_Z = sizeof(Array);
- int half = size / 2;
+int main() {
 
- // base case
- if (half < 1)
-  return;
+  props::terrain[0][0] =                    rand() % props::maxHeight;
+  props::terrain[0][props::max] =           rand() % props::maxHeight;
+  props::terrain[props::max][0] =           rand() % props::maxHeight;
+  props::terrain[props::max][props::max] =  rand() % props::maxHeight;
+
+  divide(props::side);
+}
+
+int attemptAccess(int x, int y) {
+  try {
+    return props::terrain.at(x).at(y);
+  }
   
- // square steps
- for (int z = half; z < CHUNK_Z; z+=size)
-  for (int x = half; x < CHUNK_X; x+=size)
-   squareStep(Array, x % CHUNK_X, z % CHUNK_Z, half);
-   
- // diamond steps
- int col = 0;
- for (int x = 0; x < CHUNK_X; x += half)
- {
-  col++;
-  // odd columns
-  if (col % 2 == 1)
-   for (int z = half; z < CHUNK_Z; z += size)
-    diamondStep(Array, x % CHUNK_X, z % CHUNK_Z, half);
-  // evens
-  else
-   for (int z = 0; z < CHUNK_Z; z += size)
-    diamondStep(Array, x % CHUNK_X, z % CHUNK_Z, half);
- }
-
- // recursive call
- diamondSquare(Array, size / 2);
+  catch (std::out_of_range& err) {
+    props::validNeighbors--;
+    return 0;
+  }
 }
 
-void squareStep(int Array[][], int x, int z, int reach)
-{
- int CHUNK_X = sizeof(Array[0]);
- int CHUNK_Z = sizeof(Array);
+void square(int x, int y, int size) {
+  props::validNeighbors = 4;
 
- int count = 0;
- float avg = 0.0f;
- if (x - reach >= 0 && z - reach >= 0)
- {
-  avg += Array[x-reach][z-reach];
-  count++;
- }
- if (x - reach >= 0 && z + reach < CHUNK_Z)
- {
-  avg += Array[x-reach][z+reach];
-  count++;
- }
- if (x + reach < CHUNK_X && z - reach >= 0)
- {
-  avg += Array[x+reach][z-reach];
-  count++;
- }
- if (x + reach < CHUNK_X && z + reach < CHUNK_Z)
- {
-  avg += Array[x+reach][z+reach];
-  count++;
- }
- avg += random(reach);
- avg /= count;
- Array[x][z] = round(avg);
+  int topLeft = attemptAccess(x - size, y - size);
+  int topRight = attemptAccess(x + size, y - size);
+  int bottomLeft = attemptAccess(x + size, y + size);
+  int bottomRight = attemptAccess(x - size, y + size);
+
+  int average = (int)(
+    (topLeft + topRight + bottomLeft + bottomRight) / props::validNeighbors
+  );
+
+  props::terrain[x][y] = average;
 }
 
-void diamondStep(int Array[][], int x, int z, int reach)
-{
- int CHUNK_X = sizeof(Array[0][0]);
- int CHUNK_Z = sizeof(Array[0]);
+void diamond(int x, int y, int size) {
+  props::validNeighbors = 4;
 
- int count = 0;
- float avg = 0.0f;
- if (x - reach >= 0)
- {
-  avg += Array[x-reach][z];
-  count++;
- }
- if (x + reach < CHUNK_X)
- {
-  avg += Array[x+reach][z];
-  count++;
- }
- if (z - reach >= 0)
- {
-  avg += Array[x][z-reach];
-  count++;
- }
- if (z + reach < CHUNK_Z)
- {
-  avg += Array[x][z+reach];
-  count++;
- } avg += random(reach);
- avg /= count;
- Array[x][z] = (int)avg;
+  int right = attemptAccess(x + size, y);
+  int top = attemptAccess(x, y - size);
+  int left = attemptAccess(x - size, y);
+  int bottom = attemptAccess(x, y + size);
+
+  int average = (int)(
+    (top + right + left + bottom + left) / 4
+  );
+
+  props::terrain[x][y] = average;
+
 }
 
-inline static float random(int range)
-{
- return (rand() % (range * 2)) - range;
+void divide(int size) {
+  // x and y are grid coordinates, but ultimately only
+  // one var is necessary. it's just more readable this way
+  int x = size >> 2;
+  int y = x;
+  int half = x;
+
+  if (half < 1) {
+    return;
+  }
+
+  // i haven't tested these and i'm new to c++ looping
+
+  // square steps
+  for(int i = half; i < props::max; i = i + size) {
+    for(int i2 = half; i < props::max; i = i + size) {
+      square(x, y, half);
+    }
+  }
+  // diamond steps
+  for(int i = 0; i < props::max + 1; i = i + half) {
+    for(int i = y + half % size; props::max + 1; i = i + size) {
+      diamond(x, y, half);
+    }
+  }
+
 }

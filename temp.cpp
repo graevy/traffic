@@ -7,6 +7,7 @@
 
 int main() {
 
-    std::vector<int> foo (10);
-    return foo.at(11);
+    int size = 100;
+    std::vector<std::vector<int> > foo (size);
+
 }

@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <vector>
 #include <stdexcept>
-#include <math.h> // for round()
 
 namespace props {
 
@@ -11,7 +10,10 @@ namespace props {
   int maxHeight = 255;
   int validNeighbors = 4;
 
-  // 2d vector 'terrain'
+  // 2d vector 'terrain' with side*side dimensions, populated with zeroes
+  // using vector instead of array because it has bounds checking
+  // in the at() method. it might be faster to use an array
+  // and if statements
   std::vector<std::vector<int> >
   terrain(
     side,
@@ -20,11 +22,13 @@ namespace props {
 
 int main() {
 
+  // set corners to random values
   props::terrain[0][0] =                    rand() % props::maxHeight;
   props::terrain[0][props::max] =           rand() % props::maxHeight;
   props::terrain[props::max][0] =           rand() % props::maxHeight;
   props::terrain[props::max][props::max] =  rand() % props::maxHeight;
 
+  // begin recursion
   divide(props::side);
 }
 
@@ -90,10 +94,12 @@ void divide(int size) {
     }
   }
   // diamond steps
-  for(int i = 0; i < props::max + 1; i = i + half) {
-    for(int i = y + half % size; props::max + 1; i = i + size) {
+  for(int i = 0; i < props::side; i = i + half) {
+    for(int i = y + half % size; props::side; i = i + size) {
       diamond(x, y, half);
     }
   }
+
+  divide(size);
 
 }

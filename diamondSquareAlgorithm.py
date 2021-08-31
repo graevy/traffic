@@ -59,7 +59,7 @@ class DiamondSquareAlgorithm:
         bottom_left = self.attemptAccess(x + size, y + size)
         bottom_right = self.attemptAccess(x - size, y + size)
 
-        average = ((top_left + top_right + bottom_left + bottom_right) // self.validNeighbors)
+        average = (top_left + top_right + bottom_left + bottom_right) // self.validNeighbors
         self.terrain[x, y] = average
 
     def diamond(self, x, y, size):
@@ -77,13 +77,13 @@ class DiamondSquareAlgorithm:
 
                 B
         """
-
+        self.validNeighbors = 4
         right = self.attemptAccess(x + size, y)
         top = self.attemptAccess(x, y - size)
         left = self.attemptAccess(x - size, y)
         bottom = self.attemptAccess(x, y + size)
 
-        average = ((top + right + bottom + left) // 4)
+        average = (top + right + bottom + left) // self.validNeighbors
         self.terrain[x, y] = average
 
     def divide(self, size):

@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <vector>
 #include <stdexcept>
+#include <iostream>
 
 namespace props {
 
@@ -18,18 +19,6 @@ namespace props {
   terrain(
     side,
     std::vector<int>(side));
-}
-
-int main() {
-
-  // set corners to random values
-  props::terrain[0][0] =                    rand() % props::maxHeight;
-  props::terrain[0][props::max] =           rand() % props::maxHeight;
-  props::terrain[props::max][0] =           rand() % props::maxHeight;
-  props::terrain[props::max][props::max] =  rand() % props::maxHeight;
-
-  // begin recursion
-  divide(props::side);
 }
 
 int attemptAccess(int x, int y) {
@@ -70,6 +59,7 @@ void diamond(int x, int y, int size) {
     (top + right + left + bottom + left) / 4
   );
 
+  // TODO: segfault here
   props::terrain[x][y] = average;
 
 }
@@ -101,4 +91,28 @@ void divide(int size) {
   }
 
   divide(size);
+}
+
+void show() {
+
+    for (int i = 0; i < props::side; i++) {
+        for (int j = 0; j < props::side; j++) {
+            std::cout << props::terrain[i][j] << ' ';
+        }
+        std::cout << std::endl;
+    }
+}
+
+int main() {
+
+  // set corners to random values
+  props::terrain[0][0] =                    rand() % props::maxHeight;
+  props::terrain[0][props::max] =           rand() % props::maxHeight;
+  props::terrain[props::max][0] =           rand() % props::maxHeight;
+  props::terrain[props::max][props::max] =  rand() % props::maxHeight;
+
+  // begin recursion
+  divide(props::side);
+
+  show();
 }

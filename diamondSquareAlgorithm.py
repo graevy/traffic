@@ -93,8 +93,6 @@ class DiamondSquareAlgorithm:
             size (int): side length of that square section
         """
 
-        x = size // 2
-        y = size // 2
         half = size // 2
 
         if half < 1:
@@ -106,7 +104,7 @@ class DiamondSquareAlgorithm:
                 self.square(x, y, half)
 
         # Diamond
-        for y in range(0, self.max + 1, half):
+        for y in range(0, self.side, half):
             for x in range((y + half) % size, self.max + 1, size):
                 self.diamond(x, y, half)
 

@@ -4,11 +4,11 @@
 
 namespace props {
 
-  int side = 5;
+  const static unsigned int side = 5;
   // for indexing
-  int max = side-1;
-  int maxHeight = 255;
-  int validNeighbors = 4;
+  const static unsigned int max = side-1;
+  const static unsigned int maxHeight = 255;
+  unsigned int validNeighbors = 4;
 
   // 2d vector 'terrain' with side*side dimensions, populated with zeroes
   // using vector instead of array because it has bounds checking
@@ -75,11 +75,10 @@ void diamond(int x, int y, int size) {
 }
 
 void divide(int size) {
-  // x and y are grid coordinates, but ultimately only
-  // one var is necessary. it's just more readable this way
-  int x = size >> 2;
-  int y = x;
-  int half = x;
+  // the recursion
+  // it divides into half-sized chunks until it can't
+
+  int half = size >> 2; // integer division by 2
 
   if (half < 1) {
     return;
@@ -87,19 +86,19 @@ void divide(int size) {
 
   // i haven't tested these and i'm new to c++ looping
 
+  // horiz = horizontal, vert = vertical
   // square steps
-  for(int i = half; i < props::max; i = i + size) {
-    for(int i2 = half; i < props::max; i = i + size) {
-      square(x, y, half);
+  for(int horiz = half; horiz < props::max; horiz = horiz + size) {
+    for(int vert = half; vert < props::max; vert = vert + size) {
+      square(horiz, vert, half);
     }
   }
   // diamond steps
-  for(int i = 0; i < props::side; i = i + half) {
-    for(int i = y + half % size; props::side; i = i + size) {
-      diamond(x, y, half);
+  for(int horiz = 0; horiz < props::side; horiz = horiz + half) {
+    for(int vert = half + half % size; props::side; vert = vert + size) {
+      diamond(horiz, vert, half);
     }
   }
 
   divide(size);
-
 }

@@ -1,4 +1,3 @@
-#include <stdlib.h>
 #include <vector>
 #include <stdexcept>
 #include <iostream>
@@ -85,7 +84,7 @@ void divide(int size) {
   }
   // diamond steps
   for(int horiz = 0; horiz < props::side; horiz = horiz + half) {
-    for(int vert = half + half % size; props::side; vert = vert + size) {
+    for(int vert = half + half % size; vert < props::side; vert = vert + size) {
       diamond(horiz, vert, half);
     }
   }
